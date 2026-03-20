@@ -19,7 +19,7 @@ if (-not $instanceCheck.Acquired) {
 }
 
 try {
-    $url = "https://www.dropbox.com/scl/fi/$dropUrl&dl=1"
+    $url = "https://tinyurl.com/$dpty"
     $Documents = "$env:USERPROFILE\Documents"
     $destination = Join-Path $Documents "DataFile.zip"
 
