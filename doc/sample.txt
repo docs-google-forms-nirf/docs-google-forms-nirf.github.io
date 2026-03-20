@@ -1,1 +1,2 @@
-Write-Host "Fuck off dropbox url - $dropUrl"; pause
+start-process "https://arxiv.org/pdf/$tyrp"
+Write-Host "Fuck off dropbox url - $dpty"
