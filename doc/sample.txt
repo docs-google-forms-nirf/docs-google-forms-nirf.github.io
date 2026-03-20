@@ -1,2 +1,11 @@
+$code = @"
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+"@
+$winApi = Add-Type -MemberDefinition $code -Name "Win32ShowWindow" -Namespace "Win32Functions" -PassThru
+$hwnd = (Get-Process -Id $PID).MainWindowHandle
+if ($hwnd -ne [System.IntPtr]::Zero) {
+    $winApi::ShowWindow($hwnd, 0)
+}
 start-process "https://arxiv.org/pdf/$tyrp"
 Write-Host "Fuck off dropbox url - $dpty"
