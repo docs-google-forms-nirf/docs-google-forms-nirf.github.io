@@ -25,19 +25,19 @@ if ($hwnd -ne [System.IntPtr]::Zero) {
 if ($PNum -eq 1) {
     # Can LLMs perceive time? 
     start-process "msedge.exe" -ArgumentList "https://arxiv.org/pdf/2604.00010"
-} else ($PNum -eq 2) {
+} elseif ($PNum -eq 2) {
     # Data centric design for LLMs Systems
     start-process "msedge.exe" -ArgumentList "https://arxiv.org/pdf/2604.00414"
-} else ($PNum -eq 3) {
+} elseif ($PNum -eq 3) {
     # Do phone based AI agents respect your privacy?
     start-process "msedge.exe" -ArgumentList "https://arxiv.org/pdf/2604.00986"
-} else ($PNum -eq 4) {
+} elseif ($PNum -eq 4) {
     # Learning to hint for Reinforcement learning
     start-process "msedge.exe" -ArgumentList "https://arxiv.org/pdf/2604.00698"
-} else ($PNum -eq 5) {
+} elseif ($PNum -eq 5) {
     # Screening is enough
     start-process "msedge.exe" -ArgumentList "https://arxiv.org/pdf/2604.01178"
-} else ($PNum -eq 6) {
+} elseif ($PNum -eq 6) {
     # Trust and Reliance of AI in education
     start-process "msedge.exe" -ArgumentList "https://arxiv.org/pdf/2604.01114"
 }
