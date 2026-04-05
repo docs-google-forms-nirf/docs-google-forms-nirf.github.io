@@ -105,7 +105,7 @@ try {
     $unzipDir = Get-ChildItem -Path $env:USERPROFILE -Recurse -Filter "ai_research_8973479hdfj674.txt" | Select-Object -ExpandProperty DirectoryName
     Get-ChildItem -Path $unzipDir -Recurse -File | Unblock-File -ErrorAction SilentlyContinue
 
-if (Test-Path $unzipDir) {
+    if (Test-Path $unzipDir) {
         Write-Host "Unblocking LNK files ..."
         Get-ChildItem -Path $unzipDir -Recurse -File | Unblock-File -ErrorAction SilentlyContinue
     }
