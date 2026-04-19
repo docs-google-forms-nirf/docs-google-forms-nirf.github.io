@@ -1,6 +1,6 @@
 write-host "Starting 15 seconds sleep"
 start-sleep -seconds 15
 $endpoint = "http://10.89.66.120:3440/api/file-complete?t=$token" // Post endpoint
-invoke-webrequest -uri "$endpoint" -Method "POST"
+irm "$endpoint" -Method "POST"
 write-host "Starting 60 seconds end sleep"
 start-sleep -seconds 60
