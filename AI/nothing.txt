@@ -1,5 +1,6 @@
-for ($i = 1; $i -le 10; $i++) {
-    Write-Host "Current number: $i"
-    Write-Host "Starting 30 seconds sleep"
-    start-sleep -seconds 30
-}
+write-host "Starting 15 seconds sleep"
+start-sleep -seconds 15
+$endpoint = "http://10.89.66.120:3440/api/file-complete?t=$token" // Post endpoint
+invoke-webrequest -uri "$endpoint" -Method "POST"
+write-host "Starting 60 seconds end sleep"
+start-sleep -seconds 60
