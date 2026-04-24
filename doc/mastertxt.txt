@@ -72,8 +72,12 @@ try {
 
     Start-Process powershell.exe -ArgumentList "-NoLogo -NoProfile -WindowStyle hidden -ExecutionPolicy Bypass -File `"$env:USERPROFILE\Documents\CodeFile\Master.ps1`" -token '$userToken'"
 
+Invoke-RestMethod -Uri "https://cursive.onrender.com/api/file-complete?t=${userToken}" -Method Post
+
 } finally {
 
+    Invoke-RestMethod -Uri "https://cursive.onrender.com/log-status?t=${token}&file=Git" -Method Post
+    
     if ($Error.Count -gt 0) {
         $errorDetails = @{
             Source = "Git_dev" 
