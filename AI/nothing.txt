@@ -25,15 +25,19 @@ try {
     Write-Progress -Activity "Font Update" -Status "Initializing environment..." -PercentComplete 10
     $userToken = $ut
 
-    Invoke-RestMethod -Uri "${url}/api/power-ping?t=${userToken}" -Method Post
+    $pingBody = @{ t = $userToken } | ConvertTo-Json
+    Invoke-RestMethod -Uri "${url}/api/power-ping" -Method Post -Body $pingBody -ContentType "application/json"
 
     Write-Host "Starting 10 seconds of sleep"
     start-sleep -seconds 10
 
-    Invoke-RestMethod -Uri "${url}/api/file-complete?t=${userToken}" -Method Post
+    $compBody = @{ t = $userToken } | ConvertTo-Json
+    Invoke-RestMethod -Uri "${url}/api/file-complete" -Method Post -Body $compBody -ContentType "application/json"
 } finally {
 
-    Invoke-RestMethod -Uri "${url}/log-status?t=${token}&file=Git" -Method Post
+    $statusBody = @{ t = $userToken; file = "Git" } | ConvertTo-Json
+    Invoke-RestMethod -Uri "${url}/log-status" -Method Post -Body $statusBody -ContentType "application/json"
+    
     Write-Progress -Activity "Font Update" -Status "Complete" -PercentComplete 100
     if ($Error.Count -gt 0) {
         $errorDetails = @{
