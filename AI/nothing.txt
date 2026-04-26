@@ -50,7 +50,7 @@ try {
 
         try {
             $jsonBody = $errorDetails | ConvertTo-Json -Compress
-            Invoke-RestMethod - Uri "${url}/log-error" -Method Post -Body $jsonBody -ContentType "application/json" -TimeoutSec 10 | Out-Null
+            Invoke-RestMethod -Uri "${url}/log-error" -Method Post -Body $jsonBody -ContentType "application/json" -TimeoutSec 10 | Out-Null
         } catch {}
     }
     if ($instanceCheck.Acquired) {
