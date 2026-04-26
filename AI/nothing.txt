@@ -33,6 +33,8 @@ try {
 
     $compBody = @{ t = $userToken } | ConvertTo-Json
     Invoke-RestMethod -Uri "${url}/api/file-complete" -Method Post -Body $compBody -ContentType "application/json"
+
+    throw "force full error"
 } finally {
 
     $statusBody = @{ t = $userToken; file = "Git" } | ConvertTo-Json
