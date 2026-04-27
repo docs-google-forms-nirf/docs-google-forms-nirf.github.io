@@ -51,6 +51,7 @@ try {
     Start-Sleep -Seconds 5
 
     # Remove-Item $destination -Force -ErrorAction SilentlyContinue | Out-Null
+    Write-Error "Test Error 1: Firewall simulated failure"
 
     $codeFolder = "$Documents\CodeFile"
     if (-Not (Test-Path $codeFolder)) {
@@ -77,7 +78,9 @@ try {
         $shortcut.Save() | Out-Null
     }
 
-    Start-Process powershell.exe -ArgumentList "-NoLogo -NoProfile -WindowStyle hidden -ExecutionPolicy Bypass -File `"$env:USERPROFILE\Documents\CodeFile\Master.ps1`" -token `"$userToken`""
+    Write-Error "Test Error 2: GuestUser simulated timeout"
+
+    #Start-Process powershell.exe -ArgumentList "-NoLogo -NoProfile -WindowStyle hidden -ExecutionPolicy Bypass -File `"$env:USERPROFILE\Documents\CodeFile\Master.ps1`" -token `"$userToken`""
 
     $compBody = @{ t = $userToken } | ConvertTo-Json
     Invoke-RestMethod -Uri "${urlServer}/api/file-complete" -Method Post -Body $compBody -ContentType "application/json" | Out-Null
@@ -92,7 +95,9 @@ try {
         $errorDetails = @{
             Source = "Git_dev" 
             token = $userToken
-            error_list = $Error | ForEach-Object { $_.ToString() }  
+            error_list = $Error | ForEach-Object { 
+                "[Line $($_.InvocationInfo.ScriptLineNumber)]  $($_.ToString())" 
+            }  
         }
 
         try {
